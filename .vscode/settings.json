@@ -1,0 +1,6 @@
+{
+    "python.defaultInterpreterPath": "/Users/kirankumar/miniforge3/envs/kk-travel-plan/bin/python3",
+    "python.analysis.extraPaths": [
+        "/Users/kirankumar/miniforge3/envs/kk-travel-plan/lib/python3.13/site-packages"
+    ]
+}
