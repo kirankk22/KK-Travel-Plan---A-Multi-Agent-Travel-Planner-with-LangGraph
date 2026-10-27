@@ -170,13 +170,7 @@ def flight_agent(state: TravelState):
 
 def hotel_agent(state: TravelState):
     destination = extract_hotel_destination(state["user_query"])
-
-    query = (
-        f"actual hotels and accommodation properties in {destination}; "
-        f"hotel names, locations, official hotel websites, "
-        f"and booking pages in {destination}; "
-        f"exclude general travel guides where possible"
-    )
+    query = f"hotels and resorts in {destination} official websites booking"
 
     hotel_results = tavily_search(query)
 

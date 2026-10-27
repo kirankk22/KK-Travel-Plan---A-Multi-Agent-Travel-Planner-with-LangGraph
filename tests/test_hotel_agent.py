@@ -37,10 +37,7 @@ def test_hotel_agent_searches_destination_and_preserves_result():
         result = backend.hotel_agent(state)
 
     search.assert_called_once_with(
-        "actual hotels and accommodation properties in Japan; "
-        "hotel names, locations, official hotel websites, "
-        "and booking pages in Japan; "
-        "exclude general travel guides where possible"
+        "hotels and resorts in Japan official websites booking"
     )
     assert result["hotel_results"] == "Mock hotel results"
     assert result["llm_calls"] == 1
@@ -61,9 +58,6 @@ def test_hotel_agent_uses_a_destination_specific_search_query():
         result = backend.hotel_agent(state)
 
     search.assert_called_once_with(
-        "actual hotels and accommodation properties in Tokyo; "
-        "hotel names, locations, official hotel websites, "
-        "and booking pages in Tokyo; "
-        "exclude general travel guides where possible"
+        "hotels and resorts in Tokyo official websites booking"
     )
     assert result["hotel_results"] == "Tokyo hotel search results"
