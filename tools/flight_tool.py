@@ -21,6 +21,9 @@ BASE_URL = "http://api.aviationstack.com/v1/flights"
 AIRPORTS = airportsdata.load("IATA")
 
 COUNTRY_ALIASES = {
+    "us": "US",
+    "u.s.": "US",
+    "united states of america": "US",
     "usa": "US",
     "u.s.a": "US",
     "u.s.": "US",
@@ -424,51 +427,50 @@ def parse_route(query: str):
 
 
 
-def format_flight(flight: dict):
-    airline = flight.get("airline", {}).get("name") or "Unknown airline"
-    flight_number = flight.get("flight", {}).get("iata") or "Unknown flight number"
-    status = flight.get("flight_status") or "Unknown"
 
-    dep = flight.get("departure", {}) or {}
-    arr = flight.get("arrival", {}) or {}
+def format_flight(flight: dict) -> str:
+    """Format only fields present in an AviationStack flight record."""
 
-    dep_airport = dep.get("airport") or "Unknown departure airport"
-    dep_iata = dep.get("iata") or "Unknown"
-    dep_terminal = dep.get("terminal") or "N/A"
-    dep_gate = dep.get("gate") or "N/A"
-    dep_scheduled = dep.get("scheduled") or "Unknown"
-    dep_delay = dep.get("delay")
-    dep_delay_text = f"{dep_delay} minutes" if dep_delay is not None else "N/A"
+    airline_data = flight.get("airline") or {}
+    flight_data = flight.get("flight") or {}
+    departure = flight.get("departure") or {}
+    arrival = flight.get("arrival") or {}
 
-    arr_airport = arr.get("airport") or "Unknown arrival airport"
-    arr_iata = arr.get("iata") or "Unknown"
-    arr_terminal = arr.get("terminal") or "N/A"
-    arr_gate = arr.get("gate") or "N/A"
-    arr_scheduled = arr.get("scheduled") or "Unknown"
-    arr_delay = arr.get("delay")
-    arr_delay_text = f"{arr_delay} minutes" if arr_delay is not None else "N/A"
+    lines = [
+        "Source: AviationStack flight-status API",
+        "Important: This record does not establish ticket price or booking availability.",
+    ]
 
-    return f"""
-Airline: {airline}
-Flight: {flight_number}
-Status: {status}
+    def add_field(label: str, value):
+        if value is not None and str(value).strip():
+            lines.append(f"- {label}: {value}")
 
-Departure:
-- Airport: {dep_airport}
-- IATA: {dep_iata}
-- Terminal: {dep_terminal}
-- Gate: {dep_gate}
-- Scheduled: {dep_scheduled}
-- Delay: {dep_delay_text}
+    add_field("Airline", airline_data.get("name"))
+    add_field("Flight number", flight_data.get("iata"))
+    add_field("Status", flight.get("flight_status"))
 
-Arrival:
-- Airport: {arr_airport}
-- IATA: {arr_iata}
-- Terminal: {arr_terminal}
-- Gate: {arr_gate}
-- Scheduled: {arr_scheduled}
-- Delay: {arr_delay_text}
-""".strip()
+    lines.append("")
+    lines.append("Departure:")
+
+    add_field("Departure airport", departure.get("airport"))
+    add_field("Departure IATA", departure.get("iata"))
+    add_field("Departure terminal", departure.get("terminal"))
+    add_field("Departure gate", departure.get("gate"))
+    add_field("Departure scheduled time", departure.get("scheduled"))
+    add_field("Departure delay in minutes", departure.get("delay"))
+
+    lines.append("")
+    lines.append("Arrival:")
+
+    add_field("Arrival airport", arrival.get("airport"))
+    add_field("Arrival IATA", arrival.get("iata"))
+    add_field("Arrival terminal", arrival.get("terminal"))
+    add_field("Arrival gate", arrival.get("gate"))
+    add_field("Arrival scheduled time", arrival.get("scheduled"))
+    add_field("Arrival delay in minutes", arrival.get("delay"))
+
+    return "\n".join(lines)
+
 
 
 
@@ -570,7 +572,9 @@ def search_flights(query: str, limit: int = 10):
         print("AviationStack request parameters:", {
             key: value for key, value in params.items() if key != "access_key"
         })
+
         response = requests.get(BASE_URL, params=params, timeout=30)
+        response.raise_for_status()
         data = response.json()
     except requests.exceptions.RequestException as e:
         return f"Flight API request failed: {e}"

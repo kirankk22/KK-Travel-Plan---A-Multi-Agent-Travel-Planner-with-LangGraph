@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f8fc">
+    <title>{{ title }} | AI Travel Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.1/dist/purify.min.js"></script>
+    <script src="{{ url_for('static', path='script.js') }}" defer></script>
+
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/" aria-label="KK Travel Planner home">
+            <span class="brand-mark">K</span>
+            <span>KK <strong>Travel Planner</strong></span>
+        </a>
+        <span class="topbar-label"><span class="status-dot"></span> AI-powered trip planning</span>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero">
+            <span class="eyebrow">YOUR NEXT ADVENTURE STARTS HERE</span>
+            <h1>Travel farther.<br><span>Plan smarter.</span></h1>
+            <p>Tell us what you're dreaming of. Your AI travel team will help you explore flights, stays, and a personalized itinerary.</p>
+        </section>
+
+        <section class="planner-card" aria-labelledby="planner-title">
+            <div class="card-heading">
+                <div>
+                    <span class="section-kicker">TRIP BUILDER</span>
+                    <h2 id="planner-title">Where would you like to go?</h2>
+                    <p>Describe your trip in your own words.</p>
+                </div>
+                <div class="heading-icon" aria-hidden="true">✈</div>
+            </div>
+
+            <form id="travel-form">
+                <label for="travel-query">Your travel plan</label>
+                <textarea
+                    id="travel-query"
+                    name="query"
+                    rows="4"
+                    minlength="5"
+                    maxlength="2000"
+                    placeholder="Example: Plan a 7-day Japan trip from Delhi for two people under ₹2 lakhs..."
+                    required
+                ></textarea>
+
+                <div class="prompt-chips" aria-label="Example trip requests">
+                    <button type="button" class="prompt-chip" data-prompt="Plan a 5-day trip to Singapore from Bengaluru">🇸🇬 Singapore getaway</button>
+                    <button type="button" class="prompt-chip" data-prompt="Plan a 7-day Japan trip from Delhi under 2 lakhs">🇯🇵 Japan adventure</button>
+                    <button type="button" class="prompt-chip" data-prompt="Plan a 3-day trip to Goa from Bengaluru">🏖️ Goa escape</button>
+                </div>
+
+                <div class="form-footer">
+                    <p class="privacy-note">Your itinerary may include unverified prices and availability. Check details before booking.</p>
+                    <button type="submit" id="submit-button" class="primary-button">
+                        <span id="button-label">Plan my trip</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section id="loading-panel" class="loading-panel" hidden aria-live="polite">
+            <div class="loader"></div>
+            <div>
+                <h3>Building your travel plan</h3>
+                <p>Our travel agents are gathering information and preparing your itinerary.</p>
+            </div>
+        </section>
+
+        <section id="error-panel" class="error-panel" hidden role="alert">
+            <h3>We couldn't complete your request</h3>
+            <p id="error-message">Please try again.</p>
+        </section>
+
+        <section id="results-panel" class="results-panel" hidden aria-live="polite">
+            <div class="results-heading">
+                <div>
+                    <span class="section-kicker">YOUR PERSONALIZED PLAN</span>
+                    <h2>Your journey, mapped out.</h2>
+                    <p id="result-meta">Your travel plan is ready.</p>
+                </div>
+                <button id="new-trip-button" type="button" class="secondary-button">New trip</button>
+            </div>
+
+            <div class="result-grid">
+                <article class="result-card itinerary-card">
+                    <div class="result-card-heading">
+                        <span class="result-icon">✦</span>
+                        <h3>Travel itinerary</h3>
+                    </div>
+                    <div id="itinerary-content" class="result-content"></div>
+                </article>
+
+                <article class="result-card">
+                    <div class="result-card-heading">
+                        <span class="result-icon">✈</span>
+                        <h3>Flight information</h3>
+                    </div>
+                    <div id="flight-content" class="result-content"></div>
+                </article>
+
+                <article class="result-card">
+                    <div class="result-card-heading">
+                        <span class="result-icon">⌂</span>
+                        <h3>Accommodation</h3>
+                    </div>
+                    <div id="hotel-content" class="result-content"></div>
+                </article>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <p>Made for curious travellers. Powered by LangGraph and AI.</p>
+            <p>Always verify prices, schedules, visa requirements, and availability before booking.</p>
+        </footer>
+    </main>
+</body>
+</html>
